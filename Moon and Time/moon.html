@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap"
+      rel="stylesheet"
+    />
+    <title>Moon</title>
+  </head>
+
+  <style>
+    body {
+      background-color: #101227;
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin: 0;
+      font-size: 12px;
+    }
+
+    .planet {
+      margin-left: -170px;
+      width: 30em;
+      height: 30em;
+      background-image: url(image/earth.png);
+      background-position: center;
+      border-radius: 50%;
+      box-shadow: inset 0 0 5em 0 #fed84c80, 0 0 20em 4em #e8a55233,
+        0 0 55em 8em #ff4d4d1a;
+      position: absolute;
+      top: 90px;
+      left: 50%;
+      transform: translateX(-50%);
+      animation: rotatePlanet 20s linear infinite;
+    }
+
+    .satellite,
+    .satellite::after {
+      content: "";
+      position: absolute;
+      width: 5em;
+      height: 5em;
+      border-radius: 50%;
+    }
+    .satellite {
+      background-image: url(image/moon\ remover\ bg.png);
+      background-position: center;
+      box-shadow: -2em 0 5em -1em white;
+      overflow: hidden;
+      transition: 250ms;
+      left: 32em;
+      transform: rotate(20deg);
+      animation: round 5s infinite ease-in-out;
+    }
+
+    .satellite::after {
+      background: #262938;
+      width: auto2.5em;
+      height: 2.5em;
+      box-shadow: 0 0 0.75em 0.95em #262938;
+      animation: round 5s infinite ease-in-out;
+    }
+
+    @keyframes rotatePlanet {
+      0%,
+      100% {
+        transform: rotate(0deg);
+      }
+
+      100% {
+        transform: rotate(360deg);
+      }
+    }
+
+    @keyframes shadow {
+      0% {
+        width: 2.5em;
+        left: 0;
+      }
+
+      25% {
+        width: 5em;
+        left: 0;
+      }
+
+      50% {
+        width: 2.5em;
+        left: 2.5em;
+      }
+
+      80% {
+        left: 0;
+        box-shadow: 0 0 0.55em 0.75em #262938;
+      }
+
+      100% {
+        width: 2.5em;
+        left: 0;
+      }
+    }
+
+    @keyframes round {
+      0%,
+      100% {
+        top: 2em;
+        left: -15em;
+        box-shadow: -2em 0 5em 0.5em #c6836466;
+        z-index: 2;
+        opacity: 1; /* Keep the satellite visible at the start and end */
+      }
+
+      49.9%,
+      50.1% {
+        opacity: 0; /* Make the satellite invisible at the back of the planet */
+      }
+
+      25% {
+        box-shadow: 0 0 3em 1em #412104b5;
+      }
+
+      75% {
+        box-shadow: 0 0 3em 1em black;
+      }
+
+      48% {
+        z-index: 2;
+      }
+
+      50% {
+        left: 40em;
+        top: 20em;
+        z-index: -1;
+        box-shadow: 2em 0 5em 0.5em #845a4682;
+      }
+
+      99% {
+        z-index: -1;
+      }
+    }
+
+    .digital-clock {
+      background-color: #000;
+      color: white;
+      display: flex;
+      border-radius: 2em;
+      user-select: none;
+      padding: 0 2em;
+      border: 0.5rem solid #2d2d2d;
+      position: absolute;
+      bottom: 90px;
+      left: 50%;
+      transform: translateX(-50%);
+      align-items: center;
+      padding: 10px;
+    }
+
+    .week {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      width: 7em;
+      color: #2d2d2d;
+      font-weight: bold;
+      font-family: "Press Start 2P", sans-serif;
+      font-size: 15px;
+    }
+
+    .week .active {
+      color: white;
+    }
+
+    .time {
+      font-family: "Press Start 2P", sans-serif;
+    }
+
+    .hour,
+    .min,
+    .dot {
+      display: inline-block;
+      font-size: 50px;
+    }
+
+    .min {
+      display: math;
+    }
+
+    .invisible {
+      visibility: hidden;
+    }
+  </style>
+  <body>
+    <div class="planet">
+      <div class="satellite"></div>
+    </div>
+
+    <div class="digital-clock">
+      <div class="week">
+        <div class="active">SUN</div>
+        <div>MON</div>
+        <div>TUE</div>
+        <div>WED</div>
+        <div>THU</div>
+        <div>FRI</div>
+        <div>SAT</div>
+      </div>
+      <div class="time">
+        <div class="hour">12</div>
+        <div class="dot">:</div>
+        <div class="min">05</div>
+      </div>
+    </div>
+  </body>
+
+  <script>
+    const $ = (selector) => {
+      return document.querySelector(selector);
+    };
+
+    const hour = $(".hour");
+    const dot = $(".dot");
+    const min = $(".min");
+    const week = $(".week");
+    let showDot = true;
+
+    function update() {
+      showDot = !showDot;
+      const now = new Date();
+
+      if (showDot) {
+        dot.classList.add("invisible");
+      } else {
+        dot.classList.remove("invisible");
+      }
+
+      hour.textContent = String(now.getHours()).padStart(2, "0");
+      min.textContent = String(now.getMinutes()).padStart(2, "0");
+
+      Array.from(week.children).forEach((ele) => {
+        ele.classList.remove("active");
+      });
+      week.children[now.getDay()].classList.add("active");
+    }
+
+    setInterval(update, 500);
+  </script>
+</html>
